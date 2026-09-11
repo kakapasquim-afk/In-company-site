@@ -1,0 +1,9 @@
+# Variáveis de ambiente — a API Key NUNCA deve ir para o Git
+.env
+.env.*
+!.env.example
+
+node_modules/
+
+.DS_Store
+Thumbs.db

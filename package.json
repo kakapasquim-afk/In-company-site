@@ -1,0 +1,9 @@
+{
+  "name": "unipar-in-company-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site institucional Unipar In Company (estático + Vercel Functions)",
+  "engines": {
+    "node": ">=18"
+  }
+}

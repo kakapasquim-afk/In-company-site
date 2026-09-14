@@ -15,7 +15,7 @@ Comunicar a Unipar In Company como parceira estratégica de educação e desenvo
 1. **Não apagar/substituir a estrutura existente.** Este é um projeto em andamento; altere somente o necessário.
 2. **Contatos oficiais são fixos** (e-mail `celso.ferrari@prof.unipar.br`, telefone `(44) 9916-2293`, WhatsApp e sede em Umuarama — não alterar).
 3. **Ordem dos projetos, parceiros e seções é fixa** (conforme `index.html`); não reordenar por critério próprio.
-4. **Imagens-pôster** usam `object-contain` (sem corte); fotografias usam `object-cover`.
+4. **Imagens-pôster** usam `object-contain` (sem corte); fotografias usam `object-cover`. Exceção registrada (2026-09-14): fotos panorâmicas muito largas que perderiam conteúdo sob `cover` (ex.: `sescoop-4`/`sescoop-5`) usam exibição integral via classe escopada `.case-image-duo--sescoop` (`aspect-ratio: auto` + `height: auto` + `object-fit: contain`).
 5. **Siga os tokens de cor/tipografia** de `css/styles.css` (variáveis `oklch`); não invente cores fora do sistema.
 6. **Acessibilidade**: preservar `aria-*`, foco visível e `prefers-reduced-motion` já implementados.
 7. **Idioma único:** português do Brasil (pt-BR).

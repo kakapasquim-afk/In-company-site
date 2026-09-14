@@ -2674,6 +2674,14 @@ body.menu-open {
 .case-image-duo .case-image {
   margin: 0;
 }
+.case-image-duo--sescoop .case-image {
+  aspect-ratio: auto;
+}
+.case-image-duo--sescoop .case-image img {
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
 .project-closing {
   border-left: 4px solid var(--primary);
   padding-left: 20px;

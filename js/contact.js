@@ -36,6 +36,7 @@
     statusBox.setAttribute("role", "status");
     statusBox.setAttribute("aria-live", "polite");
     statusBox.innerHTML = (isError ? ICONS.error : ICONS.ok) + "<span>" + state.message + "</span>";
+    statusBox.focus();
   }
 
   function clearStatus() {

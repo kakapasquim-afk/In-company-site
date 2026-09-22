@@ -4,6 +4,19 @@ Registro contínuo de decisões, aprendizados e histórico para uso em sessões 
 
 ## Decisões
 
+### 2026-09-22 — Formulário de contato alinhado ao fluxo oficial (auditoria + ajustes autorizados)
+- **Diagnóstico:** o fluxo pedido já estava implementado (usuário → `site.html` `#contact-form` → `js/contact.js` → `POST /api/contact` → Vercel Function `api/contact.js` → Resend → `celso.ferrari@prof.unipar.br` via `RESEND_TO_EMAIL`). Formulário com Nome completo*, Empresa / Organização, E-mail*, Telefone e textarea de desafio; honeypot `.hp-field`; status `#contact-status`; botão `.form-submit` com loading/duplo clique travado.
+- **Conflitos identificados e decisões do usuário:**
+  1. Campo **E-mail** mantido (função `reply_to` no Resend; usuário escolheu "manter"). Corpo do e-mail passou a incluir a linha "E-mail".
+  2. **Assunto substituído** (autorizado): "Novo contato pelo site — [Nome]" → **"Novo contato — Unipar In Company — [Nome completo]"**. `specs/design.md` atualizado.
+  3. **Mensagem de sucesso mantida** ("Mensagem enviada com sucesso! Entraremos em contato em breve.") — usuário optou por não trocar.
+- **O que foi feito:**
+  - `site.html`: `autocomplete="name"`, `"organization"`, `"email"`, `"tel"` nos inputs; label do textarea → **"Descreva um desafio de desenvolvimento da sua equipe"** (placeholder de exemplo); `#contact-status` ganhou `tabindex="-1"` (foco acessível).
+  - `api/contact.js`: assunto novo; corpo refeito com versão **HTML** (banda vermelha `#c8102e` preservada; seções "Dados do contato", "Desafio de desenvolvimento", "Origem: Formulário de contato — Site Unipar In Company", "Data/hora" em `pt-BR`/`America/Sao_Paulo`) e versão **text/plain** (`text` no payload do Resend) no formato do pedido (campos, separador, Origem, Data/hora); guard de payload > 100 KB → 413. `reply_to`, honeypot, rate limit e variáveis de ambiente intactos.
+  - `js/contact.js`: foco na caixa de status após feedback (acessibilidade).
+  - Intactos: `.env.example`, `vercel.json`, `package.json`, `.gitignore`.
+- **Validação:** `node --check` OK (4 arquivos JS); harness local com `fetch` do Resend mockado (fora do projeto) — sucesso completo, `text`+`html`+`reply_to`+assunto conferidos, honeypot, 405/400/413/429, sem vazamento de chave. Envio **real** via Resend não testado localmente (sem credenciais) — depende das variáveis de ambiente da Vercel. Sem commit/push/deploy.
+
 ### 2026-09-15 — Feedback de projetos na home (v3 final: 9 depoimentos, avatar topo-esquerdo, nome à direita, depoimento abaixo)
 - **Pedido do usuário (2 correções em sequência):** (1) passar de **5 para 9 depoimentos**; (2) reordenar o interior de cada card: **avatar no canto superior ESQUERDO**, **nome à direita do avatar** (alinhado ao topo) com "Participante" logo abaixo, e **depoimento ABAIXO** do bloco foto+nome, ocupando toda a largura do card. A versão anterior (avatar à direita do nome, no rodapé) foi considerada **incorreta** pelo usuário. Proibido redesenhar/re criar a seção, adicionar/baixar fotos reais, mudar grid/cores/tipografia/bordas/raio/sombra/responsividade.
 - **O que foi feito:**

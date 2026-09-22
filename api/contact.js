@@ -78,10 +78,32 @@ function validate(payload) {
   return errors;
 }
 
+function buildEmailText(data) {
+  var bar = "────────────────────────";
+  return (
+    "NOVO CONTATO — UNIPAR IN COMPANY\n\n" +
+    "DADOS DO CONTATO\n" +
+    bar + "\n\n" +
+    "Nome completo:\n" + data.name + "\n\n" +
+    "Empresa / Organização:\n" + (data.company || "-") + "\n\n" +
+    "E-mail:\n" + data.email + "\n\n" +
+    "Telefone:\n" + (data.phone || "-") + "\n\n" +
+    "DESAFIO DE DESENVOLVIMENTO\n" +
+    bar + "\n\n" +
+    data.message + "\n\n" +
+    "Origem:\nFormulário de contato — Site Unipar In Company\n\n" +
+    "Data/hora:\n" + data.date
+  );
+}
+
+function formatTimestamp() {
+  return new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+}
+
 function buildEmailHtml(data) {
   var esc = escapeHtml;
   var rows = [
-    { label: "Nome", value: esc(data.name) },
+    { label: "Nome completo", value: esc(data.name) },
     { label: "Empresa / Organização", value: esc(data.company) || "-" },
     { label: "E-mail", value: esc(data.email) },
     { label: "Telefone", value: esc(data.phone) || "-" },
@@ -91,12 +113,12 @@ function buildEmailHtml(data) {
     .map(function (row) {
       return (
         '<tr>' +
-        '<td style="padding:8px 0 2px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">' +
+        '<td style="padding:6px 0 2px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">' +
         row.label +
         '</td>' +
         '</tr>' +
         '<tr>' +
-        '<td style="padding:0 0 14px;font-size:15px;line-height:1.5;color:#17121f;">' +
+        '<td style="padding:0 0 10px;font-size:15px;line-height:1.5;color:#17121f;">' +
         row.value +
         '</td>' +
         '</tr>'
@@ -108,7 +130,7 @@ function buildEmailHtml(data) {
     '<!DOCTYPE html>' +
     '<html lang="pt-BR">' +
     '<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />' +
-    '<title>Novo contato pelo site</title></head>' +
+    '<title>Novo contato — Unipar In Company</title></head>' +
     '<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:Manrope,Arial,Helvetica,sans-serif;">' +
     '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f4f4f5;padding:24px 12px;">' +
     '<tr><td align="center">' +
@@ -116,19 +138,24 @@ function buildEmailHtml(data) {
     '<tr>' +
     '<td style="background-color:#c8102e;padding:28px 32px;color:#ffffff;">' +
     '<div style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:6px;">Unipar In Company</div>' +
-    '<div style="font-size:22px;line-height:1.2;font-weight:800;">NOVO CONTATO PELO SITE</div>' +
+    '<div style="font-size:22px;line-height:1.2;font-weight:800;">NOVO CONTATO — UNIPAR IN COMPANY</div>' +
     '</td>' +
     '</tr>' +
     '<tr><td style="padding:28px 32px;">' +
     '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">' +
+    '<tr><td style="padding-bottom:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">Dados do contato</td></tr>' +
     fields +
     '<tr><td style="height:1px;background-color:#ececee;margin:10px 0;"></td></tr>' +
-    '<tr><td style="padding-top:18px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">Mensagem</td></tr>' +
+    '<tr><td style="padding-top:18px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">Desafio de desenvolvimento</td></tr>' +
     '<tr>' +
-    '<td style="padding:8px 0 0;border-radius:8px;background-color:#faf6f7;border:1px solid #f0e4e7;font-size:15px;line-height:1.6;color:#17121f;font-style:italic;">' +
+    '<td style="padding:8px 0 0;border-radius:8px;background-color:#faf6f7;border:1px solid #f0e4e7;font-size:15px;line-height:1.6;color:#17121f;">' +
     data.messageHtml +
     '</td>' +
     '</tr>' +
+    '<tr><td style="padding-top:20px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">Origem</td></tr>' +
+    '<tr><td style="padding:2px 0 0;font-size:14px;line-height:1.5;color:#5c5b5e;">Formulário de contato — Site Unipar In Company</td></tr>' +
+    '<tr><td style="padding-top:14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#88898c;">Data/hora</td></tr>' +
+    '<tr><td style="padding:2px 0 0;font-size:14px;line-height:1.5;color:#5c5b5e;">' + esc(data.date) + '</td></tr>' +
     '</table>' +
     '</td></tr>' +
     '<tr>' +
@@ -162,6 +189,11 @@ module.exports = async function handler(req, res) {
     res
       .status(429)
       .json({ status: "error", message: "Muitas tentativas. Aguarde alguns minutos e tente novamente." });
+    return;
+  }
+
+  if (typeof req.body === "string" && req.body.length > 100000) {
+    res.status(413).json({ status: "error", message: "Requisição muito grande." });
     return;
   }
 
@@ -207,12 +239,22 @@ module.exports = async function handler(req, res) {
   var company = sanitize(payload.company, MAX_COMPANY);
   var message = sanitize(payload.message, MAX_MESSAGE);
 
+  var date = formatTimestamp();
   var html = buildEmailHtml({
     name: name,
     company: company,
     email: email,
     phone: phone,
     messageHtml: escapeHtml(message).replace(/\n/g, "<br />"),
+    date: date,
+  });
+  var text = buildEmailText({
+    name: name,
+    company: company,
+    email: email,
+    phone: phone,
+    message: message,
+    date: date,
   });
 
   var to = (process.env.RESEND_TO_EMAIL || DEFAULT_TO).trim();
@@ -230,8 +272,9 @@ module.exports = async function handler(req, res) {
         from: from,
         to: [to],
         reply_to: email,
-        subject: "Novo contato pelo site — " + name,
+        subject: "Novo contato — Unipar In Company — " + name,
         html: html,
+        text: text,
       }),
       signal: controller,
     });

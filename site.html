@@ -1073,29 +1073,29 @@
               <div class="form-grid">
                 <div class="form-field">
                   <label class="form-label" for="name">Nome completo <span class="required">*</span></label>
-                  <input class="form-input" id="name" name="name" type="text" required placeholder="Seu nome" />
+                  <input class="form-input" id="name" name="name" type="text" required placeholder="Seu nome" autocomplete="name" />
                 </div>
                 <div class="form-field">
                   <label class="form-label" for="company">Empresa / Organização</label>
-                  <input class="form-input" id="company" name="company" type="text" placeholder="Nome da organização" />
+                  <input class="form-input" id="company" name="company" type="text" placeholder="Nome da organização" autocomplete="organization" />
                 </div>
                 <div class="form-field">
                   <label class="form-label" for="email">E-mail <span class="required">*</span></label>
-                  <input class="form-input" id="email" name="email" type="email" required placeholder="voce@empresa.com" />
+                  <input class="form-input" id="email" name="email" type="email" required placeholder="voce@empresa.com" autocomplete="email" />
                 </div>
                 <div class="form-field">
                   <label class="form-label" for="phone">Telefone</label>
-                  <input class="form-input" id="phone" name="phone" type="tel" placeholder="(00) 00000-0000" />
+                  <input class="form-input" id="phone" name="phone" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" />
                 </div>
                 <div class="form-field form-field--full">
-                  <label class="form-label" for="message">Como podemos ajudar? <span class="required">*</span></label>
-                  <textarea class="form-textarea" id="message" name="message" rows="5" required placeholder="Descreva o desafio de desenvolvimento da sua equipe."></textarea>
+                  <label class="form-label" for="message">Descreva um desafio de desenvolvimento da sua equipe <span class="required">*</span></label>
+                  <textarea class="form-textarea" id="message" name="message" rows="5" required placeholder="Ex.: capacitar lideranças, desenvolver competências técnicas ou preparar sucessores."></textarea>
                 </div>
               </div>
 
               <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-              <div id="contact-status" class="form-status" hidden></div>
+              <div id="contact-status" class="form-status" tabindex="-1" hidden></div>
 
               <button type="submit" class="form-submit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>

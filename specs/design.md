@@ -15,7 +15,7 @@ Site institucional **premium, limpo e sóbrio**, com forte presença do vermelho
 1. **Neutralidade como base, vermelho como identidade** — fundo branco/neutro no corpo; vermelho reservado para header, CTA, badges, destaques e microdetalhes.
 2. **Hierarquia clara** — títulos grandes (Manrope extrabold) vs. corpo (Inter), com `letter-spacing` apertado nos títulos e `line-height` folgado no texto.
 3. **Espaçamento generoso** — seções com `80px/112px` verticais; respiro amplo entre blocos.
-4. **Conteúdo primeiro** — textos longos e institucionais bem legíveis; fotografias reais (turmas, unidades, equipe) e logos de parceiros em destaque.
+4. **Conteúdo primeiro** — textos longos e institucionais bem legíveis; fotografias reais (turmas, unidades, eventos) e logos de parceiros em destaque. **Exceção (2026-09-25, com confirmação do usuário):** não existe mais a seção de equipe no site — ver "Seção de equipe (removida)" em Componentes.
 5. **Consistência** — mesmos componentes/tokens em todas as seções (cards arredondados, badges, botões `border-radius: 9999px`).
 6. **Acessibilidade e movimento** — animações sutis, respeitam `prefers-reduced-motion`, foco visível (`:focus-visible`) e `aria-*`.
 7. **Português do Brasil (pt-BR)** como idioma único do conteúdo.
@@ -26,7 +26,7 @@ Sistema em `css/styles.css` via variáveis `oklch`. Vermelho institucional deriv
 
 - **Fundo (`--background`):** branco `oklch(1 0 0)`.
 - **Superfícies/cards (`--card`, `--popover`):** branco.
-- **Secundário/muted (`--secondary`, `--muted`):** cinza-rosado muito claro `oklch(0.968 …)` — usado como fundo alternado de seções (Team, Solutions, Youth, Units).
+- **Secundário/muted (`--secondary`, `--muted`):** cinza-rosado muito claro `oklch(0.968 …)` — usado como fundo alternado de seções (Solutions, Youth, Units). *(Team foi removido em 2026-09-25.)*
 - **Texto principal (`--foreground`):** quase preto de tom quente `oklch(0.19 0.01 20)`.
 - **Texto secundário (`--muted-foreground`):** cinza médio `oklch(0.5 0.015 22)`.
 - **Destaque/primária (`--primary`):** vermelho Unipar `oklch(0.523 0.214 26)`.
@@ -59,7 +59,7 @@ Hierarquia observada em `css/styles.css`:
 - **Container máximo:** `1440px` (`.container-1440`); conteúdo de texto usa até `1024px` (`.container-5xl`) ou `64rem` em blocos de projeto.
 - **Padding horizontal:** `20px` (mobile) / `32px` (≥768px).
 - **Ritmo vertical das seções:** `.section-py` = `80px`/`112px` (≥1024px); seções alternam `--background` (branco) e `--secondary` (cinza claro).
-- **Grids:** CSS Grid responsivo — padrões `1col → 2col (640px) → 3col (1024px)` (soluções, projetos, unidades), `2col (768px)` (equipe), `4col (1024px)` parceiros, `2col (1024px)` para texto+mídia (hero, split).
+- **Grids:** CSS Grid responsivo — padrões `1col → 2col (640px) → 3col (1024px)` (soluções, projetos, unidades), `4col (1024px)` parceiros, `2col (1024px)` para texto+mídia (hero, split). *(O grid `2col (768px)` da equipe foi removido em 2026-09-25 com a seção.)*
 - **Hero:** fundo **`#FF0000`** (vermelho puro da logo `hero-in-company-logo.jpg`, confirmado por análise de pixels: 88% da imagem) com 2 radiais sutis de profundidade (branco 6% topo-direita, preto 18% base-esquerda); min-height 90vh desktop; grid `1fr 1.05fr` (≥1024px) empilhado mobile; título **Manrope** 800 (`clamp(2rem,7vw,4.2rem)`) branco com palavra `.primary` **branca 800** (visível sobre vermelho); subtítulo branco 86% opacidade; botões primário branco+vermelho, outline branco-transparente (escopados `.hero__actions`); frame sem borda/fundo branco — imagem `contain` integrada diretamente ao fundo vermelho; blob branco 7% brilho 420px. Header fixo vermelho `--primary` integra-se naturalmente.
 - **Header fixo:** fundo `--primary` (vermelho), reduz altura do logo ao rolar (`224×48 → 192×40`), sombra ao rolar; menu mobile fullscreen sobre vermelho.
 - **Cards:** `border: 1px solid var(--border)`, fundo branco, hover `translateY(-4px)` + sombra.
@@ -86,7 +86,7 @@ Hierarquia observada em `css/styles.css`:
 - **Reveal:** animação `fade-up` (0.6s, `cubic-bezier(0.22,1,0.36,1)`) com `animation-delay` em ms para escalonar (`.reveal` → `.is-visible`, via IntersectionObserver).
 - **Entrance screen (`.entrance`):** overlay fixed `--primary` com logo e CTA, exibida 1x por sessão (`sessionStorage`), sai com `fade-out`.
 - **Cards de projeto (`.project-card`):** imagem `aspect-ratio 16/10`, badge de categoria `--primary`, título Manrope 700, organização em `--primary`, "Conhecer projeto" com seta que desliza no hover.
-- **Cards de equipe (`.team-card`):** foto `4/5` `object-cover top`, nome, cargo, links sociais com ícone + texto, hover `-4px`.
+- **Seção de equipe (`.team`, `.team-card`) — REMOVIDA (2026-09-25, com confirmação do usuário):** a seção "Equipe Unipar In Company" foi **eliminada por completo** do site. Não é ocultação (`display:none`/`visibility`/`opacity`) nem remoção parcial: o `<section id="equipe">` saiu do `site.html` junto com o comentário `<!-- TEAM -->`, o `.container-1440`, o wrapper `gap: 48px`, o bloco `.section-title` (label "Equipe Unipar In Company", H2 "Conheça nossa equipe", parágrafo de descrição), o `.team__grid`, os 2 `.team-card` (Professor Celso Ferrari Júnior e Kayke Pasquim Ferrari) com nome, cargo, Instagram, LinkedIn e WhatsApp, além do bloco `.team-card__img` e das 6 réguas CSS exclusivas (`.team`, `.team__grid` + media query 768px, `.team-card`, `.team-card:hover`, `.team-card__body` + media query, `.team-card__head`, `.team-card__name`, `.team-card__role` + media query, `.team-card__links`, `.team-card__link`, `.team-card__link--medium/--phone`, `:hover`, `.soc`, `.word`). **Não havia item de navegação** para `#equipe` (nav desktop, menu mobile e footer nunca tiveram "Equipe"), portanto nenhum link foi quebrado. Os arquivos `img/equipe-celso.jpg` e `img/equipe-kayke.jpg` foram **mantidos no repositório** (sem referência, órfãos). A classe `.soc` e os ícones SVG de WhatsApp eram usados **exclusivamente** aqui e saíram junto. Ordem das seções na home: `#inicio` → `#sobre` → `#estrategia` → `#solucoes` → `#projetos` → `#feedbacks-projetos` → `#parceiros` → `#unidades` → `#contato`.
 - **Cards de valores (`.value-card`):** ícone em chip `--red-50` (vira `--primary` no hover), numeração `01–07`.
 - **Timeline (`.timeline`) do programa Jovens Potenciais:** linha vertical/central, nós redondos, ano em pill `--primary`, conteúdo alterna lado.
 - **Cards de parceiros (`.partner-link`):** logo em área branca `80px` `object-contain`, nome, descrição, CTA; grid 4 col (desktop).
@@ -101,7 +101,7 @@ Hierarquia observada em `css/styles.css`:
 
 ## Imagens e Mídia
 
-- **Fotografias reais** de turmas, campi, eventos e equipe — sensação de instituição viva e regional; `object-cover` com zoom suave no hover. **Exceção (2026-09-14):** fotos panorâmicas muito largas que perderiam conteúdo relevante com `cover` (ex.: `sescoop-4`, `sescoop-5` no duo do Sescoop; `uniprime-5`, `uniprime-6` e as panorâmicas da segunda linha `uniprime-7.png`, `uniprime-8.png` no bloco final — "Educação que transforma" — da página Uniprime Pioneira) usam exibição integral `object-contain`/`height: auto` via classe escopada - nunca cortar.
+- **Fotografias reais** de turmas, campi e eventos — sensação de instituição viva e regional; `object-cover` com zoom suave no hover. **Exceção (2026-09-14):** fotos panorâmicas muito largas que perderiam conteúdo relevante com `cover` (ex.: `sescoop-4`, `sescoop-5` no duo do Sescoop; `uniprime-5`, `uniprime-6` e as panorâmicas da segunda linha `uniprime-7.png`, `uniprime-8.png` no bloco final — "Educação que transforma" — da página Uniprime Pioneira) usam exibição integral `object-contain`/`height: auto` via classe escopada - nunca cortar. **Exceção (2026-09-25, com confirmação do usuário):** **não há fotografias de equipe no site** — a seção de equipe foi removida por completo (ver "Seção de equipe (removida)"), e portanto não existem fotos, avatares, placeholders ou ícones de identidade de integrantes em lugar nenhum.
 - **Imagens-pôster/artes (ex.: `mba-agro-credito.jpeg`, `sescoop-2027.png`, `mestrado-biotec.png`):** `object-contain` — **nunca** cortar textos/logos.
 - **Logos de parceiros** sobre área branca `border-radius: 12px`, `object-contain`, sem distorção.
 - **Logo do site (`brand-logo`):** carregado de URL externa (Vercel Blob) com `mix-blend-mode: screen` sobre fundo `--primary`; há cópia local em `img/`.

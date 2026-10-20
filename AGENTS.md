@@ -21,6 +21,16 @@ Comunicar a Unipar In Company como parceira estratégica de educação e desenvo
 7. **Idioma único:** português do Brasil (pt-BR).
 8. **Logos/contatos de parceiros e textos institucionais** não podem ser trocados sem confirmação.
 
+## Preferências de navegação, animação e interação
+
+Registradas em 2026-10-09 (este arquivo cumpre a função de `CLAUDE.md` no projeto; não criar duplicata).
+
+- **Rolagem:** priorizar a rolagem nativa e suave (`html { scroll-behavior: smooth }`, já em `css/styles.css`, com `auto` sob `prefers-reduced-motion`). Nunca torná-la artificialmente lenta, nem bloquear a rolagem global com `overflow: hidden` sem necessidade específica (exceções existentes: tela de entrada e menu mobile). Sem bibliotecas de scroll, loops ou temporizadores. Manter links internos, botão Voltar e teclado funcionando.
+- **Animações:** curtas, suaves e discretas (fade + pequeno movimento). Entrada ao rolar via `.reveal` (+ variantes `.reveal-drop/-left/-right/-mask/-title/-words`, ver `@specs/design.md`) e **um único** `IntersectionObserver` (`js/main.js`) — reutilizar, não duplicar; um efeito principal por componente. Conteúdo deve permanecer visível sem JavaScript (`@media (scripting: none)`). Respeitar `prefers-reduced-motion`; evitar efeitos exagerados.
+- **Componentes interativos:** criar cartões expansíveis somente quando houver conteúdo real a revelar (não inventar textos). Botões devem executar ações reais; preservar foco visível, `aria-*` e teclado; garantir responsividade.
+- **Implementação:** analisar a arquitetura antes de editar, reutilizar estilos/componentes, evitar dependências, não substituir arquivos inteiros, preservar funcionalidades e testar antes de concluir.
+- **Cores:** destaque amarelo (ou qualquer cor fora dos tokens `oklch` de `css/styles.css`) só com confirmação do usuário — ver `@specs/design.md`.
+
 ## Documentos de referência
 
 - `@specs/design.md` — fonte de verdade das decisões visuais (direção, paleta, tipografia, layout, componentes, tom, responsividade e "o que evitar"). Consulte antes de qualquer alteração de visual.

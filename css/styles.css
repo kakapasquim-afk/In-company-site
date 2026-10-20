@@ -135,16 +135,159 @@ button {
   scroll-margin-top: 96px;
 }
 
-/* ---------- Reveal animation ---------- */
+/* ---------- Reveal animation ----------
+   Família única, disparada pelo mesmo IntersectionObserver (js/main.js):
+   .reveal (padrão) · .reveal-drop (cards) · .reveal-left/.reveal-right (imagens)
+   · .reveal-mask (foto de destaque) · .reveal-title/.reveal-words (texto por palavras).
+   As animações usam fill-mode "backwards": ao terminar, o elemento volta ao estado
+   normal (opacity 1) e os :hover com transform voltam a funcionar. */
+:root {
+  --motion-reveal: 0.75s;
+  --motion-drop: 0.9s;
+  --motion-slide: 0.9s;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --drop-y: -60px;
+  --drop-rot: 2.5deg;
+  --slide-x: 80px;
+}
+@media (max-width: 639px) {
+  :root {
+    --drop-y: -36px;
+    --drop-rot: 1.5deg;
+    --slide-x: 36px;
+  }
+}
+
 .reveal {
   opacity: 0;
 }
 .reveal.is-visible {
-  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 1;
+  animation: fade-up var(--motion-reveal) var(--ease-standard) backwards;
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(1.5rem); }
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
+}
+/* Sem JavaScript o IntersectionObserver não roda: mantém o conteúdo visível. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+  }
+}
+
+/* Cards que descem e se acomodam (rotação alterna entre pares/ímpares) */
+.reveal-drop:nth-child(even) {
+  --drop-tilt: calc(var(--drop-rot) * -1);
+}
+.reveal-drop.is-visible {
+  animation: reveal-drop var(--motion-drop) var(--ease-enter) backwards;
+}
+@keyframes reveal-drop {
+  from {
+    opacity: 0;
+    transform: translateY(var(--drop-y)) rotate(var(--drop-tilt, var(--drop-rot)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+/* Escalonamento por coluna nas grades sem atraso inline (máx. 220ms) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .projects-grid > .reveal:nth-child(even),
+  .units__grid > .reveal:nth-child(even) {
+    animation-delay: 110ms;
+  }
+}
+@media (min-width: 1024px) {
+  .projects-grid > .reveal:nth-child(3n + 2),
+  .units__grid > .reveal:nth-child(3n + 2) {
+    animation-delay: 110ms;
+  }
+  .projects-grid > .reveal:nth-child(3n + 3),
+  .units__grid > .reveal:nth-child(3n + 3) {
+    animation-delay: 220ms;
+  }
+}
+
+/* Imagens que entram pelas laterais (a seção recorta só o eixo X, sem criar rolagem) */
+.about,
+.split {
+  overflow-x: clip;
+}
+.reveal-left.is-visible {
+  animation: reveal-from-left var(--motion-slide) var(--ease-enter) backwards;
+}
+.reveal-right.is-visible {
+  animation: reveal-from-right var(--motion-slide) var(--ease-enter) backwards;
+}
+@keyframes reveal-from-left {
+  from { opacity: 0; transform: translateX(calc(var(--slide-x) * -1)); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes reveal-from-right {
+  from { opacity: 0; transform: translateX(var(--slide-x)); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Foto de destaque revelada de dentro de uma moldura (inset negativo no final
+   preserva a sombra do filho; sem suporte a clip-path, só o fade é aplicado) */
+.reveal-mask.is-visible {
+  animation: reveal-mask 1s var(--ease-enter) backwards;
+}
+.reveal-mask.is-visible img {
+  animation: image-settle 1.2s var(--ease-enter) backwards;
+  animation-delay: inherit;
+}
+@keyframes reveal-mask {
+  from { opacity: 0; clip-path: inset(14% 10% 14% 10% round 16px); }
+  to { opacity: 1; clip-path: inset(-40px round 16px); }
+}
+@keyframes image-settle {
+  from { transform: scale(1.1); }
+  to { transform: scale(1); }
+}
+
+/* Texto por palavras: o JS envolve cada palavra em .rw e só então marca .rw-ready,
+   por isso o texto fica visível se o JavaScript falhar. */
+.rw {
+  display: inline-block;
+}
+.rw-ready .rw {
+  opacity: 0;
+}
+.rw-ready.is-visible .rw {
+  opacity: 1;
+  animation: word-in 0.7s var(--ease-standard) backwards;
+  animation-delay: min(calc(var(--i, 0) * 55ms + var(--rw-base, 0ms)), 650ms);
+}
+@keyframes word-in {
+  from { opacity: 0; transform: translateY(0.45em); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Bloco de título: etiqueta primeiro, palavras do H2, descrição por último */
+.reveal-title.rw-ready {
+  --rw-base: 80ms;
+}
+.reveal-title.rw-ready .section-title__label,
+.reveal-title.rw-ready .section-title__desc {
+  opacity: 0;
+}
+.reveal-title.rw-ready.is-visible .section-title__label,
+.reveal-title.rw-ready.is-visible .section-title__desc {
+  opacity: 1;
+  animation: fade-up var(--motion-reveal) var(--ease-standard) backwards;
+}
+.reveal-title.rw-ready.is-visible .section-title__desc {
+  animation-delay: 400ms;
+}
+/* Sem JavaScript o IntersectionObserver não roda: mantém o conteúdo visível. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+  }
 }
 
 /* ---------- Section title ---------- */
@@ -620,17 +763,28 @@ body.menu-open {
   font-size: 1rem;
   font-weight: 600;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   border: none;
   cursor: pointer;
 }
 .btn-primary:hover {
   background: var(--red-700);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.35);
+}
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition-duration: 0.08s;
 }
 .btn-primary svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.btn-primary:hover svg {
+  transform: translateX(3px);
 }
 .btn-outline {
   display: inline-flex;
@@ -644,11 +798,16 @@ body.menu-open {
   padding: 14px 28px;
   font-size: 1rem;
   font-weight: 600;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 .btn-outline:hover {
   border-color: var(--primary);
   color: var(--primary);
+  transform: translateY(-1px);
+}
+.btn-outline:active {
+  transform: translateY(0);
+  transition-duration: 0.08s;
 }
 .hero__media {
   position: relative;
@@ -2485,7 +2644,9 @@ body.menu-open {
 .o-projeto-em-movimento__head {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 12px;
+  text-align: center;
 }
 .o-projeto-em-movimento__eyebrow {
   font-family: "Manrope", sans-serif;
@@ -2518,13 +2679,15 @@ body.menu-open {
   display: flex;
   width: 100%;
   flex-direction: column;
-  gap: 16px;
-  max-width: 64rem;
+  align-items: center;
+  gap: 20px;
 }
 .video-item__cap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
 }
 .video-item__title {
   margin: 0;
@@ -2553,21 +2716,15 @@ body.menu-open {
     font-size: 1rem;
   }
 }
+/* Player único para todos os vídeos: 16/9 na largura total da coluna (Shorts recebem faixas laterais do próprio YouTube) */
 .video-item__frame {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid var(--border);
   background: #000;
-}
-.video-item__frame--portrait {
-  aspect-ratio: 9 / 16;
-  width: 100%;
-  max-width: 20rem;
-  margin-left: auto;
-  margin-right: auto;
 }
 .video-item__frame iframe {
   position: absolute;
@@ -2575,6 +2732,20 @@ body.menu-open {
   width: 100%;
   height: 100%;
   border: 0;
+}
+.video-item__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+.video-item__link:hover {
+  text-decoration: underline;
 }
 .project-galeria {
   display: flex;
@@ -2748,6 +2919,69 @@ body.menu-open {
   color: var(--muted-foreground);
 }
 
+/* ---------- Hero: entrada ao carregar (só CSS; sem JS o conteúdo já está visível) ---------- */
+.hero__title {
+  animation: hero-rise 0.9s var(--ease-enter) backwards;
+}
+.hero__subtitle {
+  animation: fade-up 0.8s var(--ease-standard) 140ms backwards;
+}
+.hero__actions {
+  animation: fade-up 0.8s var(--ease-standard) 260ms backwards;
+}
+.hero__media {
+  animation: reveal-from-right 1s var(--ease-enter) 160ms backwards;
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Na primeira visita, espera a tela de boas-vindas sair (classe posta/removida pelo JS) */
+.hero-hold .hero__title,
+.hero-hold .hero__subtitle,
+.hero-hold .hero__actions,
+.hero-hold .hero__media {
+  animation-play-state: paused;
+}
+
+/* ---------- Cards-link: foco por teclado = mesmo destaque do hover; :active devolve o card ----------
+   Só os cards que levam a outra página (Projetos e Parceiros). Unidades são <div> sem ação: ficam de fora. */
+.project-card:has(:focus-visible),
+.partner-link:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+.partner-link:focus-visible {
+  border-color: rgba(200, 16, 46, 0.5);
+}
+.project-card:has(:focus-visible) .project-card__link svg,
+.partner-link:focus-visible .partner-cta svg {
+  transform: translateX(4px);
+}
+.project-card:active,
+.partner-link:active {
+  transform: translateY(-1px);
+  transition-duration: 0.08s;
+}
+
+/* ---------- Hero: parallax sutil da logo, ligado ao scroll (CSS nativo, sem JS) ----------
+   Vive no .hero__frame (filho): o .hero__media já tem a animação de entrada. Usa scroll(root) porque
+   .hero tem overflow:hidden e, com view(), viraria o "scroller" (que não rola). Só com suporte a
+   animation-timeline, sem reduce motion e a partir de 768px; fora disso a logo fica parada. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero__frame {
+      animation: hero-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 60vh;
+    }
+    @keyframes hero-parallax {
+      from { transform: translateY(0); }
+      to { transform: translateY(-24px); }
+    }
+  }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -2756,6 +2990,7 @@ body.menu-open {
   *,
   *::before,
   *::after {
+    animation-delay: 0ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

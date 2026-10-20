@@ -20,10 +20,13 @@
       } else {
         // Show entrance (it is opacity:0 in CSS by default when leaving not set; keep visible)
         document.body.style.overflow = "hidden";
+        // Segura a entrada do hero até a tela de boas-vindas sair.
+        document.documentElement.classList.add("hero-hold");
         entranceBtn.addEventListener("click", function () {
           try { sessionStorage.setItem(ENTRANCE_SEEN_KEY, "true"); } catch (e) {}
           entrance.classList.add("is-leaving");
           document.body.style.overflow = "";
+          document.documentElement.classList.remove("hero-hold");
         });
         entrance.addEventListener("transitionend", function (evt) {
           if (evt.propertyName === "opacity" && entrance.classList.contains("is-leaving")) {
@@ -91,8 +94,49 @@
     } catch (e) {}
   });
 
+  // --- Texto por palavras (.reveal-title: H2 do bloco de título; .reveal-words: o próprio elemento) ---
+  // Cada palavra vira <span class="rw">; o texto e a ordem de leitura não mudam.
+  // .rw-ready só é marcado depois de dividir, então uma falha deixa o texto visível.
+  function splitWords(root) {
+    var index = 0;
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          child.nodeValue.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+              return;
+            }
+            var span = document.createElement("span");
+            span.className = "rw";
+            span.style.setProperty("--i", index++);
+            span.textContent = part;
+            frag.appendChild(span);
+          });
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1) {
+          walk(child);
+        }
+      });
+    })(root);
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion) {
+    document.querySelectorAll(".reveal-title, .reveal-words").forEach(function (el) {
+      var target = el.classList.contains("reveal-title") ? el.querySelector(".section-title__h2") : el;
+      if (!target) return;
+      try {
+        splitWords(target);
+        el.classList.add("rw-ready");
+      } catch (e) {}
+    });
+  }
+
   // --- Reveal on scroll ---
-  var revealEls = document.querySelectorAll(".reveal");
+  var revealEls = document.querySelectorAll(".reveal, .reveal-title, .reveal-words");
   if ("IntersectionObserver" in window) {
     var observer = new IntersectionObserver(
       function (entries) {

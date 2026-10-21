@@ -2644,9 +2644,7 @@ body.menu-open {
 .o-projeto-em-movimento__head {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 12px;
-  text-align: center;
 }
 .o-projeto-em-movimento__eyebrow {
   font-family: "Manrope", sans-serif;
@@ -2678,25 +2676,27 @@ body.menu-open {
 .video-item {
   display: flex;
   width: 100%;
+  min-width: 0;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
 }
 .video-item__cap {
   display: flex;
+  width: 100%;
+  min-width: 0;
   flex-direction: column;
-  align-items: center;
   gap: 12px;
-  text-align: center;
+  text-align: left;
 }
 .video-item__title {
+  width: 100%;
   margin: 0;
   font-family: "Manrope", sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.375;
   color: var(--foreground);
-  text-wrap: balance;
+  text-align: left;
 }
 @media (min-width: 768px) {
   .video-item__title {
@@ -2704,8 +2704,9 @@ body.menu-open {
   }
 }
 .video-item__desc {
+  width: 100%;
   margin: 0;
-  max-width: 42rem;
+  text-align: left;
   font-size: 0.875rem;
   line-height: 1.625;
   color: var(--muted-foreground);
@@ -2720,6 +2721,7 @@ body.menu-open {
 .video-item__frame {
   position: relative;
   width: 100%;
+  min-width: 0;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 14px;
@@ -2734,6 +2736,7 @@ body.menu-open {
   border: 0;
 }
 .video-item__link {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   min-height: 44px;

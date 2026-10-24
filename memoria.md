@@ -4,6 +4,9 @@ Registro contínuo de decisões, aprendizados e histórico para uso em sessões 
 
 ## Decisões
 
+### 2026-10-24 (5) — Foto da seção "Sobre" (abaixo do Hero) trocada
+- **Pedido:** substituir a foto do grupo diante da parede vermelha "UNIPAR" por `img/Foto de Grupo em Evento Corporativo.png` (6 pessoas), mantendo a animação. **Feito:** PNG original (1660×947, 2,3 MB) convertido para `img/foto-corporativa-unipar.jpg` (qualidade 86, 231 KB) e `site.html` aponta para ele; `alt` novo "Grupo de profissionais da Unipar In Company reunido em evento corporativo". Wrapper `.reveal.reveal-mask`, `.about__media` (16/8, `object-fit: cover`) e CSS **intactos** — mesma animação em desktop e mobile. Cortes do `cover`: ~12% da altura; rostos preservados. `img/unipar-in-company-1.jpg` e o PNG original ficam no disco (a foto antiga já não é referenciada por nenhuma página).
+
 ### 2026-10-24 (4) — Entrada ao rolar padronizada nas páginas de projeto
 - **Pedido:** mesmo padrão de animação de rolagem (desktop e mobile) em todas as páginas de projeto; citava Cisco, Sicredi, Gazin, Cresol, Lepri Store, Twork, Sicobi/Sicredi Aranenses, Sistema M Prime e Castellini. **Existem 9 páginas** no projeto: Castelini, Cresol, Gazin, GPTW, MBA Agro (`mestrado-biotecnologia`), Sescoop 2027, Sicoob Arenito, Sicredi e Uniprime. **Cisco, Lepri Store e Twork não existem** (não criadas). Mapeamento: Sistema M Prime = Uniprime; Sicobi Aranenses = Sicoob Arenito. A mudança vale para as 9 (inclui GPTW, MBA Agro e Sescoop, que não foram citadas mas são páginas de projeto).
 - **Solução:** `js/main.js` (bloco antes do observer) marca os elementos em tempo de execução e `css/styles.css` ganha `.reveal-seq` (`--seq-step` 80ms/110ms), a entrada do hero de projeto e o token. Reutiliza o observer e os efeitos da home; nenhum HTML de página alterado. Detalhes em `specs/design.md`. Isso **reverte a decisão de 2026-10-20** (páginas de projeto sem animação), por pedido explícito do usuário.

@@ -123,8 +123,8 @@
     })(root);
   }
 
-  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!reduceMotion) {
+  // As palavras animam para todos, inclusive com movimento reduzido (decisão do usuário, 2026-10-24).
+  {
     document.querySelectorAll(".reveal-title, .reveal-words").forEach(function (el) {
       var target = el.classList.contains("reveal-title") ? el.querySelector(".section-title__h2") : el;
       if (!target) return;

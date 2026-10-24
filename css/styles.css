@@ -150,6 +150,16 @@ button {
   --drop-y: -60px;
   --drop-rot: 2.5deg;
   --slide-x: 80px;
+  --rise-y: 18px;
+}
+/* PC (≥1024px): subida do fade-up maior, proporcional à tela; celular e tablet seguem com 18px */
+@media (min-width: 1024px) {
+  :root {
+    --rise-y: 28px;
+    --motion-reveal: 1.05s;
+    --motion-drop: 1.2s;
+    --motion-slide: 1.2s;
+  }
 }
 @media (max-width: 639px) {
   :root {
@@ -167,7 +177,7 @@ button {
   animation: fade-up var(--motion-reveal) var(--ease-standard) backwards;
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(var(--rise-y, 18px)); }
   to { opacity: 1; transform: translateY(0); }
 }
 /* Sem JavaScript o IntersectionObserver não roda: mantém o conteúdo visível. */
@@ -2971,7 +2981,7 @@ body.menu-open {
    Vive no .hero__frame (filho): o .hero__media já tem a animação de entrada. Usa scroll(root) porque
    .hero tem overflow:hidden e, com view(), viraria o "scroller" (que não rola). Só com suporte a
    animation-timeline, sem reduce motion e a partir de 768px; fora disso a logo fica parada. */
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 768px) {
   @supports (animation-timeline: scroll()) {
     .hero__frame {
       animation: hero-parallax linear both;
@@ -2985,17 +2995,31 @@ body.menu-open {
   }
 }
 
-/* ---------- Reduced motion ---------- */
+/* ---------- PC: cascata nas grades da home (≥1024px) ----------
+   No celular cada card entra sozinho enquanto se rola; no PC várias linhas entram juntas e o atraso
+   (inline ou por coluna) recomeçava a cada linha, então a grade aparecia em bloco. Aqui o atraso segue
+   a posição do item na grade (110ms por item; as grades têm até 10 itens, então o máximo é 990ms, sem
+   teto que volte a agrupar a última linha). O !important só vence o atraso inline; vale para todos os
+   visitantes, inclusive com movimento reduzido (decisão do usuário, 2026-10-24). Celular e tablet não mudam. */
+@media (min-width: 1024px) {
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(1) { animation-delay: 0ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(2) { animation-delay: 110ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(3) { animation-delay: 220ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(4) { animation-delay: 330ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(5) { animation-delay: 440ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(6) { animation-delay: 550ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(7) { animation-delay: 660ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(8) { animation-delay: 770ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(9) { animation-delay: 880ms !important; }
+  :is(.values-list, .solutions-grid, .projects-grid, .feedbacks-grid, .partners-grid, .units__grid) > .reveal:nth-child(10) { animation-delay: 990ms !important; }
+}
+
+/* ---------- Movimento reduzido ----------
+   Decisão do usuário (2026-10-24): TODOS os visitantes veem as animações de entrada e as transições,
+   inclusive os que têm "efeitos de animação" desligados no sistema (antes: durações e atrasos zerados).
+   Fica só a rolagem de âncoras sem suavização. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-delay: 0ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }

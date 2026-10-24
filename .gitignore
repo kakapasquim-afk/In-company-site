@@ -1,0 +1,10 @@
+# Segredos e variáveis de ambiente — nunca versionar
+.env
+.env.*
+!.env.example
+
+# Dependências e artefatos locais
+node_modules/
+.vercel/
+.DS_Store
+Thumbs.db

@@ -151,6 +151,7 @@ button {
   --drop-rot: 2.5deg;
   --slide-x: 80px;
   --rise-y: 18px;
+  --seq-step: 80ms;
 }
 /* PC (≥1024px): subida do fade-up maior, proporcional à tela; celular e tablet seguem com 18px */
 @media (min-width: 1024px) {
@@ -159,6 +160,7 @@ button {
     --motion-reveal: 1.05s;
     --motion-drop: 1.2s;
     --motion-slide: 1.2s;
+    --seq-step: 110ms;
   }
 }
 @media (max-width: 639px) {
@@ -2994,6 +2996,22 @@ body.menu-open {
     }
   }
 }
+
+/* ---------- Páginas de projeto: entrada ao rolar (2026-10-24) ----------
+   js/main.js marca os blocos com .reveal/.reveal-mask; itens lado a lado ganham .reveal-seq e atrasam
+   --i × --seq-step (--i = coluna na linha). Mesmo observer, mesmos efeitos e tokens da home. */
+.reveal.reveal-seq.is-visible {
+  animation-delay: calc(var(--i, 0) * var(--seq-step));
+}
+
+/* Hero das páginas de projeto: entrada ao carregar, só CSS (sem JS o conteúdo já está visível) */
+.project-hero__back { animation: fade-up 0.7s var(--ease-standard) backwards; }
+.project-hero__eyebrow { animation: fade-up 0.8s var(--ease-standard) 80ms backwards; }
+.project-hero__title { animation: hero-rise 0.9s var(--ease-enter) 160ms backwards; }
+.project-hero__org { animation: fade-up 0.8s var(--ease-standard) 260ms backwards; }
+.project-hero__desc { animation: fade-up 0.8s var(--ease-standard) 340ms backwards; }
+.project-hero__period { animation: fade-up 0.8s var(--ease-standard) 420ms backwards; }
+.project-hero__media { animation: reveal-from-right 1s var(--ease-enter) 200ms backwards; }
 
 /* ---------- PC: cascata nas grades da home (≥1024px) ----------
    No celular cada card entra sozinho enquanto se rola; no PC várias linhas entram juntas e o atraso

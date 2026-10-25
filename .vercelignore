@@ -3,3 +3,8 @@ AGENTS.md
 memoria.md
 specs
 Novo atalho da Internet.url
+
+# Fonte de geração das páginas e imagens sem uso: não precisam ir para produção
+README.md
+projetos/_templates
+img/arquivo

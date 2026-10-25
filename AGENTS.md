@@ -10,6 +10,29 @@ Este diretório (`unipar-site`) é um site **estático** (HTML/CSS/JS puro) que 
 
 Comunicar a Unipar In Company como parceira estratégica de educação e desenvolvimento para empresas, cooperativas e instituições, convertendo visitantes interessados em contatos/propostas (lead) por meio da seção de contato.
 
+## Estrutura de pastas (organizada em 2026-10-25)
+
+```
+site.html                  Home (única página na raiz; "/" é reescrito para ela em vercel.json)
+projetos/                  9 páginas de projeto geradas (castelini, cresol, gazin, gptw, mestrado-biotecnologia, sescoop-2027, sicoob-arenito, sicredi, uniprime)
+  _templates/              Fonte das páginas: _head, _header, _footer, _body-<projeto>.html e build.ps1
+css/styles.css             Estilos e tokens (único arquivo)
+js/                        main.js (interações/observer), map.js (mapa), contact.js
+data/                      parana.geojson, parana-path.txt, unidades.js
+img/
+  marca/                   favicon, logo do Hero, logomarca branca
+  home/                    foto da seção "Sobre"
+  unidades/                fotos dos campi (unidade-*)
+  partners/                logos dos parceiros
+  projetos/<projeto>/      fotos de cada projeto (gazin, sicredi, gptw, sescoop, cresol, castelini, uniprime, sicoob-arenito, mba-agro)
+  arquivo/                 imagens sem uso no site (não publicadas)
+specs/design.md            Decisões visuais   ·   memoria.md  Histórico de decisões   ·   README.md  Resumo para pessoas
+```
+
+- **Páginas de projeto:** edite o `_body-<projeto>.html` **e** a página gerada (`projetos/<projeto>.html`) em sincronia, ou regenere com `projetos/_templates/build.ps1` (parâmetros `-Title -Desc -BodyFile -OutFile`; a saída vai para `projetos/`). Os caminhos nos modelos são relativos a `projetos/` (`../img/...`).
+- **Novas fotos:** `img/projetos/<projeto>/<projeto>-N.jpg`; nunca na raiz de `img/`.
+- Documentos internos, `projetos/_templates`, `img/arquivo` e `README.md` ficam fora da publicação (`.vercelignore`).
+
 ## Regras fundamentais
 
 1. **Não apagar/substituir a estrutura existente.** Este é um projeto em andamento; altere somente o necessário.

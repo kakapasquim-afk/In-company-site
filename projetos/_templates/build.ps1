@@ -12,6 +12,7 @@ $body = Get-Content -LiteralPath (Join-Path $dir $BodyFile) -Raw -Encoding UTF8
 
 $out = $head + "`n" + $header + "`n" + $body + "`n" + $footer
 $out = $out.Replace("__TITLE__", $Title).Replace("__DESC__", $Desc)
-$outFileFull = Join-Path $dir $OutFile
+# Modelos ficam em projetos/_templates; a pagina gerada vai para projetos/ (pasta acima)
+$outFileFull = Join-Path (Split-Path -Parent $dir) $OutFile
 [System.IO.File]::WriteAllText($outFileFull, $out, (New-Object System.Text.UTF8Encoding($false)))
 Write-Output "Generated $OutFile"

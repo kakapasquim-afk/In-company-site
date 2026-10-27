@@ -1377,6 +1377,9 @@ body.menu-open {
   aspect-ratio: 1055 / 1491;
   max-width: 28rem;
 }
+.masters__order .split__frame--poster {
+  aspect-ratio: 4 / 5; /* cartaz da aula inaugural do MBA Agro, sem faixas laterais */
+}
 .split__frame img {
   width: 100%;
   height: 100%;
@@ -2382,6 +2385,13 @@ body.menu-open {
 .project-hero__media img.contain {
   object-fit: contain;
 }
+/* Cartaz vertical inteiro no topo da página (sem corte): MBA Agro, aula inaugural */
+.project-hero__media--poster {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 26rem;
+  justify-self: center;
+}
 
 .project-body {
   max-width: 64rem;
@@ -2586,6 +2596,13 @@ body.menu-open {
 .case-image--contain {
   aspect-ratio: 3 / 2;
 }
+.case-image--poster {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+}
 .case-image--emphasized {
   aspect-ratio: 4 / 3;
 }
@@ -2602,6 +2619,7 @@ body.menu-open {
   object-fit: cover;
 }
 .case-image--contain img,
+.case-image--poster img,
 .case-image--emphasized img {
   object-fit: contain;
 }
